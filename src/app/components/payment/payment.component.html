@@ -1,0 +1,209 @@
+<div class="container">
+  <h1 class="text-center">Choose a Can</h1>
+  <div class="card px-4 card1">
+    <div class="row py-2">
+      <div class="col-2">
+        <div class="form-check" *ngFor="let can of cans; index as i">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="can"
+            [value]="can.id"
+            [(ngModel)]="can.id"
+            (change)="canChange(i)"
+          />
+          <label class="form-check-label">{{ can.id }}</label>
+        </div>
+      </div>
+      <div class="col-10 text-center" *ngIf="canSelected">
+        <h4>{{ can.name }}</h4>
+        <img [src]="can.img" class="card-img-top can-img" alt="..." />
+        <h4>{{ can.price | currency: "AUD" }}</h4>
+        <span *ngIf="can.stock != 0; else noStock"> {{ can.stock }} Left</span>
+        <ng-template #noStock>
+          <span id="noStock"> Out of Stock </span>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="can.stock != 0">
+    <div *ngIf="canSelected">
+      <h1 class="text-center">Pay by</h1>
+      <div class="row py-2">
+        <div class="col">
+          <div class="btn btn-primary btn-lg btn-block" (click)="cashPayment()">
+            Cash
+          </div>
+        </div>
+      </div>
+      <div class="row py-2">
+        <div class="col">
+          <div
+            class="btn btn-secondary btn-lg btn-block"
+            (click)="cardPayment()"
+          >
+            Card
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="cashPaymentSelected">
+      <div class="row py-2" *ngFor="let cash of cashData; index as j">
+        <div class="col">
+          <div class="form-check">
+            <img
+              [src]="cash.img"
+              class="card-img-top btn"
+              (click)="cashSubmit(j)"
+              data-toggle="modal"
+              data-target="#ejectModal"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row py-2" *ngIf="cardPaymentSelected">
+      <div class="col card px-4 py-4">
+        <!-- Credit card form content -->
+        <div class="tab-content ">
+          <!-- credit card info-->
+          <div id="nav-tab-card" class="tab-pane fade show active">
+            <!-- <p class="alert alert-success">Some text success or error</p> -->
+            <form
+              role="form"
+              #cardForm="ngForm"
+              (ngSubmit)="cardSubmit(can.id)"
+            >
+              <div class="form-group">
+                <label for="username">Full name (on the card)</label>
+                <input
+                  type="text"
+                  name="username"
+                  placeholder="Jason Doe"
+                  required
+                  class="form-control"
+                  [(ngModel)]="cardDetails.username"
+                />
+              </div>
+              <div class="form-group">
+                <label for="cardNumber">Card number</label>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    name="cardNumber"
+                    placeholder="Your card number"
+                    class="form-control"
+                    required
+                    [(ngModel)]="cardDetails.cardNumber"
+                  />
+                  <div class="input-group-append">
+                    <span class="input-group-text text-muted">
+                      <i class="fa fa-cc-visa mx-1"></i>
+                      <i class="fa fa-cc-amex mx-1"></i>
+                      <i class="fa fa-cc-mastercard mx-1"></i>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-8">
+                  <div class="form-group">
+                    <label><span class="hidden-xs">Expiration</span></label>
+                    <div class="input-group">
+                      <input
+                        type="number"
+                        placeholder="MM"
+                        name="expMonth"
+                        class="form-control"
+                        required
+                        [(ngModel)]="cardDetails.expMonth"
+                      />
+                      <input
+                        type="number"
+                        placeholder="YY"
+                        name="expYear"
+                        class="form-control"
+                        required
+                        [(ngModel)]="cardDetails.expYear"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group mb-4">
+                    <label
+                      data-toggle="tooltip"
+                      title="Three-digits code on the back of your card"
+                      >CVV
+                      <i class="fa fa-question-circle"></i>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      name="cvv"
+                      class="form-control"
+                      [(ngModel)]="cardDetails.cvv"
+                    />
+                  </div>
+                </div>
+              </div>
+              <button
+                type="submit"
+                class="subscribe btn btn-success btn-block rounded-pill shadow-sm"
+                [disabled]="!cardForm.form.valid"
+                data-toggle="modal"
+                data-target="#ejectModal"
+              >
+                Confirm
+              </button>
+            </form>
+          </div>
+          <!-- End -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="ejectModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="ejectModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5
+            class="modal-title"
+            id="ejectModalLabel"
+            *ngIf="!cardPaymentSuccess"
+          >
+            Your changes {{ paymentDB.change | currency: "AUD" }}
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h2 class="text-center">Enjoy your {{ can.name }}</h2>
+          <img [src]="can.img" class="card-img-top" alt="..." />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

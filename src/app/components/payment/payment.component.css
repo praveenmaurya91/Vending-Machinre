@@ -1,0 +1,14 @@
+.container{
+    padding: 10px 0px 0px 0px;
+}
+.can-img{
+    max-width: 5rem;
+}
+.card1{
+    background-color:   #f7f7f7;
+    color: #2765cf;
+}
+
+#noStock{
+    color: red;
+}

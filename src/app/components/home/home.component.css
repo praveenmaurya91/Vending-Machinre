@@ -1,0 +1,16 @@
+
+.card1{
+    align-items: center;
+    width:12rem;
+    height:20rem;
+    padding: 20px 0px 20px 0px;
+    background-color: #f7f7f7;
+}
+.can-img{
+    max-width: 5rem;
+}
+.card-title, .card-text{
+    text-align: center;
+    color: #2765cf;
+}
+

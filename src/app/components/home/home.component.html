@@ -1,0 +1,17 @@
+<div class="container">
+  <div class="row">
+    <div class="col py-2 " *ngFor="let can of cans">
+      <div class="card card1">
+        <h1 class="badge badge-info">{{ can.id }}</h1>
+        <img [src]="can.img" class="card-img-top can-img" alt="..." />
+        <div class="card-body">
+          <h5 class="card-title">{{ can.name }}</h5>
+          <p class="card-text">
+            {{ can.price | currency: "AUD" }}
+          </p>
+          <p class="card-text">{{ can.stock }} Left</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
